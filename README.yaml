@@ -1,0 +1,41 @@
+---
+#
+# This is the canonical configuration for the `README.md`
+# Run `make readme` to rebuild the `README.md`
+#
+
+# Name of this project
+name: terraform-aws-anynews-republisher
+
+# License of this project
+license: "AGPL3"
+
+# Canonical GitLab repo
+gitlab_repo: guardianproject-ops/terraform-aws-anynews-republisher
+
+# Badges to display
+badges: []
+
+# Short description of this project
+description: |-
+  EC2 configuration for the AnyNews Republisher
+
+
+introduction: |-
+  TODO
+
+# How to use this project
+usage: |-
+  TODO
+
+related: []
+
+include:
+  - "docs/terraform.md"
+
+funded_by_cdr: false
+# Contributors to this project
+contributors:
+  - name: "Abel Luck"
+    gitlab: "abelxluck"
+    gravatar: 0f605397e0ead93a68e1be26dc26481a

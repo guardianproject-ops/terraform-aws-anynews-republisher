@@ -78,7 +78,7 @@ resource "aws_instance" "default" {
     volume_type = "gp2"
     volume_size = local.ec2_disk_allocation_gb
     encrypted   = true
-    kms_key_id  = module.kms_key[0].key_arn
+    kms_key_id  = local.kms_key_arn
   }
 
   metadata_options {
@@ -121,7 +121,7 @@ resource "aws_ebs_volume" "data" {
   availability_zone = local.availability_zones[0]
   size              = local.ebs_volume_disk_allocation_gb
   encrypted         = true
-  kms_key_id        = module.kms_key[0].key_arn
+  kms_key_id        = local.kms_key_arn
   tags              = module.this.tags
 }
 

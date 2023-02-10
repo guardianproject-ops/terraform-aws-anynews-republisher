@@ -1,5 +1,8 @@
 locals {
-  availability_zones = slice(data.aws_availability_zones.this.names, 0, 2)
+  enabled                = module.this.enabled
+  kms_key_create_enabled = module.this.enabled && var.kms_key_create_enabled
+  availability_zones     = slice(data.aws_availability_zones.this.names, 0, 2)
+  kms_key_arn            = local.kms_key_create_enabled ? module.kms_key[0].key_arn : var.kms_key_arn
 }
 
 data "aws_caller_identity" "this" {}
@@ -56,7 +59,7 @@ data "aws_iam_policy_document" "kms" {
 module "kms_key" {
   source                  = "cloudposse/kms-key/aws"
   version                 = "0.12.1"
-  count                   = module.this.enabled ? 1 : 0
+  count                   = local.kms_key_create_enabled ? 1 : 0
   description             = "general purpose KMS key for this deployment"
   deletion_window_in_days = 30
   enable_key_rotation     = true
@@ -74,6 +77,6 @@ module "cdn" {
   cloudfront_access_logging_enabled   = true
   cloudfront_access_log_create_bucket = true
   deployment_principal_arns = {
-    "${module.instance_role_profile[0].iam_role_arn}" = ["feeds/"]
+    (module.instance_role_profile[0].iam_role_arn) = ["feeds/"]
   }
 }

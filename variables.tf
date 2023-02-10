@@ -26,20 +26,18 @@ variable "ec2_instance_type" {
   EOT
 }
 
-variable "s3_bucket_name" {
-  default     = null
-  type        = string
-  description = <<EOT
-    (optional) If you want to provide a bucket where the republisher should store the republished feeds,
-    then you can pass a bucket name here. The republisher will receive a Read-Write policy to the bucket.
-    The module will create a bucket if not passed.
-  EOT
-}
-
 variable "kms_key_arn" {
   default     = null
   type        = string
   description = <<EOT
-    (optional) The KMS Key ARN for this deployment. If not provided, a kms key will be created.
+    (optional) When `kms_key_arn_create_enabled` is `false`, this is the KMS Key ARN for this deployment.
+  EOT
+}
+
+variable "kms_key_create_enabled" {
+  default     = true
+  type        = bool
+  description = <<EOT
+    (optional) When true a KMS key will be created for the deployment. If you set to false, then you must set `kms_key_arn` as well.
   EOT
 }

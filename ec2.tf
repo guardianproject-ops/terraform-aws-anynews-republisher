@@ -34,7 +34,7 @@ data "aws_ami" "default" {
 
 module "instance_role_profile" {
   source  = "sr2c/ec2-conf-log/aws"
-  version = "0.0.2"
+  version = "0.0.3"
 
   count = module.this.enabled ? 1 : 0
 
@@ -78,7 +78,7 @@ resource "aws_instance" "default" {
     volume_type = "gp2"
     volume_size = local.ec2_disk_allocation_gb
     encrypted   = true
-    kms_key_id  = module.kms_key.key_arn
+    kms_key_id  = module.kms_key[0].key_arn
   }
 
   metadata_options {
@@ -100,7 +100,7 @@ module "ec2_security_group" {
 
   count = module.this.enabled ? 1 : 0
 
-  vpc_id = module.vpc.vpc_id
+  vpc_id = module.vpc[0].vpc_id
   rules = [
     {
       # node_exporter
@@ -121,7 +121,7 @@ resource "aws_ebs_volume" "data" {
   availability_zone = local.availability_zones[0]
   size              = local.ebs_volume_disk_allocation_gb
   encrypted         = true
-  kms_key_id        = module.kms_key.key_arn
+  kms_key_id        = module.kms_key[0].key_arn
   tags              = module.this.tags
 }
 

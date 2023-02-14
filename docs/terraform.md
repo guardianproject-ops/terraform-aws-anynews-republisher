@@ -25,6 +25,7 @@
 | <a name="module_ec2_security_group"></a> [ec2\_security\_group](#module\_ec2\_security\_group) | cloudposse/security-group/aws | 2.0.0 |
 | <a name="module_instance_role_profile"></a> [instance\_role\_profile](#module\_instance\_role\_profile) | sr2c/ec2-conf-log/aws | 0.0.3 |
 | <a name="module_kms_key"></a> [kms\_key](#module\_kms\_key) | cloudposse/kms-key/aws | 0.12.1 |
+| <a name="module_lambda_edge"></a> [lambda\_edge](#module\_lambda\_edge) | cloudposse/cloudfront-s3-cdn/aws//modules/lambda@edge | 0.86.0 |
 | <a name="module_this"></a> [this](#module\_this) | cloudposse/label/null | 0.25.0 |
 | <a name="module_vpc"></a> [vpc](#module\_vpc) | cloudposse/vpc/aws | 2.0.0 |
 

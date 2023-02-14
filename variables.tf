@@ -41,3 +41,11 @@ variable "kms_key_create_enabled" {
     (optional) When true a KMS key will be created for the deployment. If you set to false, then you must set `kms_key_arn` as well.
   EOT
 }
+
+variable "republisher_feeds_json_b64" {
+  default     = null
+  type        = string
+  description = <<EOT
+  (optional) When a Base64 JSON string is provided, it will be placed in the feeds bucket under the `feeds/feeds.json` key.
+  EOT
+}

@@ -3,6 +3,7 @@ locals {
   kms_key_create_enabled = module.this.enabled && var.kms_key_create_enabled
   availability_zones     = slice(data.aws_availability_zones.this.names, 0, 2)
   kms_key_arn            = local.kms_key_create_enabled ? module.kms_key[0].key_arn : var.kms_key_arn
+  feeds_json_b64_enabled = module.this.enabled && var.republisher_feeds_json_b64 != null
 }
 
 data "aws_caller_identity" "this" {}
@@ -79,4 +80,14 @@ module "cdn" {
   deployment_principal_arns = {
     (module.instance_role_profile[0].iam_role_arn) = ["feeds/"]
   }
+}
+
+resource "aws_s3_bucket_object" "feeds_json_b64" {
+  count          = local.feeds_json_b64_enabled ? 1 : 0
+  bucket         = module.cdn[0].s3_bucket
+  key            = "feeds/feeds.json"
+  content_base64 = var.republisher_feeds_json_b64
+  content_type   = "application/json"
+  etag           = md5(var.republisher_feeds_json_b64)
+  acl            = "private"
 }

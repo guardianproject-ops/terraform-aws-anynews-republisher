@@ -137,6 +137,6 @@ resource "aws_s3_object" "feeds_json_b64" {
   key            = "feeds/feeds.json"
   content_base64 = var.republisher_feeds_json_b64
   content_type   = "application/json"
-  etag           = md5(var.republisher_feeds_json_b64)
+  source_hash    = md5(var.republisher_feeds_json_b64)
   acl            = "private"
 }

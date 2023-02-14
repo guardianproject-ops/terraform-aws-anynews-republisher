@@ -82,7 +82,7 @@ module "cdn" {
   }
 }
 
-resource "aws_s3_bucket_object" "feeds_json_b64" {
+resource "aws_s3_object" "feeds_json_b64" {
   count          = local.feeds_json_b64_enabled ? 1 : 0
   bucket         = module.cdn[0].s3_bucket
   key            = "feeds/feeds.json"

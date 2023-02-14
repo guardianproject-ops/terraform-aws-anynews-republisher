@@ -84,6 +84,8 @@ resource "aws_instance" "default" {
   metadata_options {
     http_tokens   = "required"
     http_endpoint = "enabled"
+    # add an extra hop to allow the container to access the metadata instance
+    http_put_response_hop_limit = 2
   }
 
   # this prevents changes to the ami from recreating the whole instance

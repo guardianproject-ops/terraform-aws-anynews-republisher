@@ -120,7 +120,7 @@ module "lambda_edge" {
 
 module "cdn" {
   source                              = "cloudposse/cloudfront-s3-cdn/aws"
-  version                             = "0.86.0"
+  version                             = "0.92.0"
   count                               = local.enabled ? 1 : 0
   context                             = module.this.context
   cloudfront_access_logging_enabled   = true

@@ -119,14 +119,18 @@ module "lambda_edge" {
 }
 
 module "cdn" {
-  source                              = "cloudposse/cloudfront-s3-cdn/aws"
-  version                             = "0.92.0"
+  #source                              = "cloudposse/cloudfront-s3-cdn/aws"
+  #version                             = "0.92.0"
+  source                              = "git::https://github.com/abeluck/terraform-aws-cloudfront-s3-cdn.git?ref=fix/bug-257"
   count                               = local.enabled ? 1 : 0
   context                             = module.this.context
   cloudfront_access_logging_enabled   = true
   cloudfront_access_log_create_bucket = true
-  deployment_principal_arns = {
-    (module.instance_role_profile[0].iam_role_arn) = ["feeds/"]
+  deployment_principals = {
+    "deploy_user" : {
+      "arn" : module.instance_role_profile[0].iam_role_arn,
+      "path_prefix" : ["feeds/"]
+    }
   }
   lambda_function_association = module.lambda_edge[0].lambda_function_association
 }

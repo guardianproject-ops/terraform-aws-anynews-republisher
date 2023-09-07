@@ -34,7 +34,7 @@ data "aws_ami" "default" {
 
 module "instance_role_profile" {
   source  = "sr2c/ec2-conf-log/aws"
-  version = "0.0.3"
+  version = "0.0.4"
 
   count = module.this.enabled ? 1 : 0
 

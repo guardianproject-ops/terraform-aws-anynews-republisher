@@ -43,6 +43,45 @@ module "instance_role_profile" {
   context = module.this.context
 }
 
+data "aws_iam_policy_document" "external_bucket_policy" {
+  statement {
+    sid = "AllowListBucket"
+    actions = [
+      "s3:List*",
+      "s3:GetBucketLocation"
+    ]
+    resources = [
+      "arn:aws:s3:::${var.bucket_name}"
+    ]
+  }
+  statement {
+    sid = "RWInPrefix"
+    actions = [
+      "s3:List*",
+      "s3:Put*",
+      "s3:Get*",
+      "s3:Delete*"
+    ]
+
+    resources = [
+      "arn:aws:s3:::${var.bucket_name}/${var.bucket_prefix}*"
+    ]
+  }
+}
+
+resource "aws_iam_policy" "external_bucket_policy" {
+  count       = local.create_bucket ? 0 : 1
+  name        = "${module.this.id}-external-bucket"
+  description = "Policy that allows the holder to access the bucket ${var.bucket_name}"
+  policy      = data.aws_iam_policy_document.external_bucket_policy.json
+}
+
+resource "aws_iam_role_policy_attachment" "external_bucket" {
+  count      = local.create_bucket ? 0 : 1
+  role       = module.instance_role_profile[0].iam_role_name
+  policy_arn = aws_iam_policy.external_bucket_policy[0].arn
+}
+
 data "cloudinit_config" "this" {
   gzip = true
 

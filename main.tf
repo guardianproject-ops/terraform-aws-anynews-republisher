@@ -3,7 +3,8 @@ locals {
   kms_key_create_enabled = local.enabled && var.kms_key_create_enabled
   availability_zones     = slice(data.aws_availability_zones.this.names, 0, 2)
   kms_key_arn            = local.kms_key_create_enabled ? module.kms_key[0].key_arn : var.kms_key_arn
-  feeds_json_b64_enabled = local.enabled && var.republisher_feeds_json_b64 != null
+  feeds_json_b64_enabled = local.enabled && var.republisher_feeds_enabled && var.republisher_feeds_json_b64 != null
+  create_bucket          = local.enabled && var.create_bucket
 }
 
 provider "aws" {
@@ -78,7 +79,7 @@ module "kms_key" {
 module "lambda_edge" {
   source  = "cloudposse/cloudfront-s3-cdn/aws//modules/lambda@edge"
   version = "0.86.0"
-  count   = local.enabled ? 1 : 0
+  count   = local.create_bucket ? 1 : 0
 
   functions = {
     cors = {
@@ -122,7 +123,7 @@ module "cdn" {
   #source                              = "cloudposse/cloudfront-s3-cdn/aws"
   #version                             = "0.92.0"
   source                              = "git::https://github.com/abeluck/terraform-aws-cloudfront-s3-cdn.git?ref=fix/bug-257"
-  count                               = local.enabled ? 1 : 0
+  count                               = local.create_bucket ? 1 : 0
   context                             = module.this.context
   cloudfront_access_logging_enabled   = true
   cloudfront_access_log_create_bucket = true
@@ -136,8 +137,19 @@ module "cdn" {
 }
 
 resource "aws_s3_object" "feeds_json_b64" {
-  count          = local.feeds_json_b64_enabled ? 1 : 0
+  count          = local.feeds_json_b64_enabled && local.create_bucket ? 1 : 0
   bucket         = module.cdn[0].s3_bucket
+  key            = "feeds/feeds.json"
+  content_base64 = var.republisher_feeds_json_b64
+  content_type   = "application/json"
+  source_hash    = md5(var.republisher_feeds_json_b64)
+  acl            = "private"
+}
+
+
+resource "aws_s3_object" "feeds_json_b64_external" {
+  count          = local.feeds_json_b64_enabled && !local.create_bucket ? 1 : 0
+  bucket         = var.bucket_name
   key            = "feeds/feeds.json"
   content_base64 = var.republisher_feeds_json_b64
   content_type   = "application/json"

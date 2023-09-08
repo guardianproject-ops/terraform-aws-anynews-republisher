@@ -26,6 +26,39 @@ variable "ec2_instance_type" {
   EOT
 }
 
+variable "create_bucket" {
+  default     = true
+  type        = bool
+  description = <<EOT
+Whether or not to create the bucket and cloudfront distribution to deploy the
+republished feeds to. If false you must specify bucket_name. This module will generate a policy for the instance that gives it read write access.
+EOT
+}
+
+variable "bucket_prefix" {
+  default     = ""
+  type        = string
+  description = <<EOT
+  Only takes effect when create_bucket is false. Will scope the instance to a prefix in the external bucket. Should end in a slash, but not start with a slash.
+EOT
+}
+
+variable "bucket_name" {
+  default     = ""
+  type        = string
+  description = <<EOT
+  Only takes effect when create_bucket is false. Will use a previously created bucket.
+EOT
+}
+
+variable "bucket_region" {
+  default     = ""
+  type        = string
+  description = <<EOT
+  Only takes effect when create_bucket is false. The region the external bucket is in.
+EOT
+}
+
 variable "kms_key_arn" {
   default     = null
   type        = string
@@ -42,6 +75,13 @@ variable "kms_key_create_enabled" {
   EOT
 }
 
+variable "republisher_feeds_enabled" {
+  default     = true
+  type        = bool
+  description = <<EOT
+    (optional) When true the republisher_feeds_json_b64 variable will be active.
+  EOT
+}
 variable "republisher_feeds_json_b64" {
   default     = null
   type        = string
